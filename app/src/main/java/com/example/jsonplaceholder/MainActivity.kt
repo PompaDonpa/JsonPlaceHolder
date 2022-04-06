@@ -30,16 +30,21 @@ class MainActivity : AppCompatActivity() {
                 RetrofitInstance.api.getTodos()
             }catch(e: IOException){
                 Log.e(TAG, "IOException, you might not have internet connection")
+                binding.progressBar.isVisible = false
                 return@launchWhenCreated
             }catch(e: HttpException){
                 Log.e(TAG, "HttpException, unexpected response")
+                binding.progressBar.isVisible = false
                 return@launchWhenCreated
             }
-            if(response.isSuccessful && response.body() != null)
+            if(response.isSuccessful && response.body() != null) {
+                todoAdapter.todos = response.body()!!
+            }else {
+                Log.e(TAG, "Response not successful")
+            }
+            binding.progressBar.isVisible = false
 
         }
-
-
     }
 
     private fun setupRecyclerView() = binding.rvTodos.apply {
